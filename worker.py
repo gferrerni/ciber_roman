@@ -1,16 +1,15 @@
 import redis
+from dotenv import load_dotenv
 from rq import Worker, Queue, Connection
 
-# Importar funciones para poder usarlas
-# Por ejemplo from <libreria>.<fichero> import <funcion>
+## AQUI CARGAMOS LOS VARIABLES QUE ESTÁN EN EL FICHERO .ENV (PARA NO DEJAR EXPUESTO DATOS SENSIBLES EN GITHUB)
+load_dotenv()
+PASSWORD = os.getenv('PASSWORD')
+PORT = os.getenv('PORT')
+HOST = os.getenv('HOST')
+REDIS_URL = os.getenv('REDIS_URL')
 
-# OJO que tenéis que indicar la contraseña, el host y el puerto.
-PASSWORD = "FWflewhfwlehfwoihf204X7234fwef"
-PORT = 30000
-HOST = "tintagel.0z0ne.com"
 
-# Hay que modificar esta URL.
-REDIS_URL = "redis://redis:6379/"
 WORKER_CONN = redis.from_url(REDIS_URL)
 
 REDIS_QUEUES_TO_LISTEN = [
@@ -18,6 +17,10 @@ REDIS_QUEUES_TO_LISTEN = [
 ]
 
 if __name__ == '__main__':
+    print(PASSWORD)
+    '''
     with Connection(WORKER_CONN):
         worker = Worker(map(Queue, REDIS_QUEUES_TO_LISTEN))
         worker.work()
+
+    '''
