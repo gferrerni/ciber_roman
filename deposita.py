@@ -1,6 +1,7 @@
 import os
 import time
 import library
+import threading
 from rq import Queue
 from redis import Redis
 from dotenv import load_dotenv
@@ -14,11 +15,21 @@ REDIS_URL = os.getenv('REDIS_URL')
 REDIS_PORT = os.getenv('REDIS_PORT')
 ntp = int(round(time.time() * 1000))
 
+redis_conn = Redis(host='redis',port=REDIS_PORT) 
+q = Queue('COLA_ATP_GF', connection=redis_conn)
+
+def cola(tarea_actual):
+        print(f'Empezando tarea:{tarea_actual}')
+        q.enqueue(tarea_actual)
+        time.sleep(1)
+        print("Tarea completada")
+        q.pop(tarea_actual)
+
+
 if __name__ == '__main__':
-    redis_conn = Redis(
-        host='redis',
-        port=REDIS_PORT) 
-    
-    q = Queue('COLA_ATP_GF', connection=redis_conn)
-    job = q.enqueue(library.aburrimiento.dime_que_hacer("ATP"))
+    tareas = [library.aburrimiento.dime_que_hacer("ATP"),library.gatos.hecho("ATP"),library.palabrotas.comprueba_una_palabra("ATP",["mierda","puta"])]
+
+    for tarea_actual in tareas:
+    	cola(tarea_actual)
+    	
 
