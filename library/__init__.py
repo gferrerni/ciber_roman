@@ -1,3 +1,3 @@
-from . import aburrimiento
-from . import gatos
-from . import palabrotas
+from .aburrimiento import *
+from .gatos import *
+from .palabrotas import *
